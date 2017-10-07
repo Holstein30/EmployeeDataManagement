@@ -21,21 +21,17 @@ $("#add-employee-btn").on("click", function(event) {
 	var role = $("#role-input").val().trim();
 	var date = $("#start-input").val().trim();
 	var rate = $("#rate-input").val().trim();
-	
-
-	function monthDiff(d1, d2) {
-	    var months;
-	    months = (d2.getFullYear() - d1.getFullYear()) * 12;
-	    months -= d1.getMonth() + 1;
-	    months += d2.getMonth();
-	    return months <= 0 ? 0 : months;
-	}
+	var monthsNeg = moment(date, "DD/MM/YY").diff(moment(), "months");
+	var months = Math.abs(monthsNeg);
+	var billed = rate * months;
 
 	database.ref().push({
         name: name,
         role: role,
         date: date,
         rate: rate,
+        months: months,
+        billed: billed
         // dateAdded: firebase.database.ServerValue.TIMESTAMP
     });
 
@@ -54,10 +50,13 @@ $("#add-employee-btn").on("click", function(event) {
 database.ref().on("child_added", function (snapshot) {
 
 	console.log(snapshot.val());
+
 	$("#tbody").append("<tr>");
 	$("#tbody").append("<td>" + snapshot.val().name + "</td>");
 	$("#tbody").append("<td>" + snapshot.val().role + "</td>");
 	$("#tbody").append("<td>" + snapshot.val().date + "</td>");
+	$("#tbody").append("<td>" + snapshot.val().months + "</td>");
 	$("#tbody").append("<td>" + snapshot.val().rate + "</td>");
+	$("#tbody").append("<td>" + snapshot.val().billed + "</td>");
 
 });
