@@ -13,21 +13,30 @@ firebase.initializeApp(config);
 
 var database = firebase.database();
 
-$("#search-btn").on("click", function(event) {
+$("#add-employee-btn").on("click", function(event) {
 
 	event.preventDefault();
 
-	var name = $(NAME).val().trim();
-	var role = $(ROLE).val().trim();
-	var date = $(DATE).val().trim();
-	var rate = $(NAME).val().trim();
+	var name = $("#employee-name-input").val().trim();
+	var role = $("#role-input").val().trim();
+	var date = $("#start-input").val().trim();
+	var rate = $("#rate-input").val().trim();
+	
 
-	dataRef.ref().push({
+	function monthDiff(d1, d2) {
+	    var months;
+	    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+	    months -= d1.getMonth() + 1;
+	    months += d2.getMonth();
+	    return months <= 0 ? 0 : months;
+	}
+
+	database.ref().push({
         name: name,
         role: role,
         date: date,
         rate: rate,
-        dateAdded: firebase.database.ServerValue.TIMESTAMP
+        // dateAdded: firebase.database.ServerValue.TIMESTAMP
     });
 
     console.log(name);
@@ -35,9 +44,20 @@ $("#search-btn").on("click", function(event) {
     console.log(date);
     console.log(rate);
 
-	$(HTML).append(name);
-	$(HTML).append(role);
-	$(HTML).append(date);
-	$(HTML).append(rate);
+    $("#employee-name-input").val("");
+    $("#role-input").val("");
+    $("#start-input").val("");
+    $("#rate-input").val("");
+
+});
+
+database.ref().on("child_added", function (snapshot) {
+
+	console.log(snapshot.val());
+	$("#tbody").append("<tr>");
+	$("#tbody").append("<td>" + snapshot.val().name + "</td>");
+	$("#tbody").append("<td>" + snapshot.val().role + "</td>");
+	$("#tbody").append("<td>" + snapshot.val().date + "</td>");
+	$("#tbody").append("<td>" + snapshot.val().rate + "</td>");
 
 });
