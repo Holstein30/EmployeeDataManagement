@@ -58,5 +58,6 @@ database.ref().on("child_added", function (snapshot) {
 	$("#tbody").append("<td>" + snapshot.val().months + "</td>");
 	$("#tbody").append("<td>" + snapshot.val().rate + "</td>");
 	$("#tbody").append("<td>" + snapshot.val().billed + "</td>");
+	$("#tbody").append("<hr>");
 
 });
